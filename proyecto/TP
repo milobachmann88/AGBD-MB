@@ -1,0 +1,71 @@
+#tp
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as pit
+
+
+#importando csv
+df=pd.read_csv("fifa_23_280922.csv")
+print("OKEY! Archivo cargado correctamente")
+
+#1
+filas,columnas= df.shape
+print(f"El dataframe tiene {filas} filas y {columnas} columnas")
+
+#2
+total_aceleracion= df['Acceleration'].count()
+print(f"Cantidad de filas con Aceleración: {total_aceleracion}")
+
+#3
+filtro_avanzado= df['Nom'].str.startswith('A', na=False)
+df_filtrado=df[filtro_avanzado]
+
+total_registros= df_filtrado['Nom'].count()
+print(f"Cantidad de nombres con A: {total_registros}")
+
+#4
+print(df_filtrado.head())
+
+#5
+datos_torta= df_filtrado.groupby("Pays")["Force"].sum()
+
+#6
+suma_aceleracion= df_filtrado['Acceleration'].sum()
+print(f"Valor total de aceleración: {suma_aceleracion}")
+
+print("Reporte automatizado")
+print(f"Valor total de aceleraciones: {suma_aceleracion}")
+
+if Default_limite_alto:=(suma_aceleracion>80000):
+    print("Alerta: el volumen de aceleración es muy alto")
+    print("Prioridad alta")
+
+else:
+    print("Estado: volumen de aceleración normal")
+    print("Estado normal")
+
+#7
+df_top_100=df.nlargest(100,'Acceleration')
+
+sns.set_theme(style="whitegrid")
+pit.figure(figsize=(9,5))
+sns.barplot(
+    data=df_top_100,
+    x="Nom",
+    y="Acceleration",
+    estimator= sum,
+    errorbar=None,
+    palette="magma",
+)
+pit.title(
+    "Distribucion de aceleración de cada club", fontsize=14
+)
+pit.xlabel("Nombre", fontsize=11)
+pit.ylabel("Aceleracion", fontsize=11)
+
+pit.tight_layout()
+pit.xticks(rotation=50, fontsize=3)
+pit.savefig("grafico_aceleración2.png", dpi=300, bbox_inches="tight")
+pit.close()
+print("Gráfico guardado como grafico_aceleración2.png")

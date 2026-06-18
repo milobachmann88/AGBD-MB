@@ -91,10 +91,12 @@ pit.close()
 print("Gráfico guardado como grafico_fuerza2.png")
 
 #GRAFICO 3
+df_top_100=df.nlargest(100,'Acceleration')
+
 sns.set_theme(style="whitegrid")
 pit.figure(figsize=(9,5))
 sns.barplot(
-    data=df,
+    data=df_top_100,
     x="Nom",
     y="Acceleration",
     estimator= sum,
