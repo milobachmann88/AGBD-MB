@@ -28,7 +28,7 @@ print(f"Cantidad de nombres con A: {total_registros}")
 print(df_filtrado.head())
 
 #5
-datos_torta= df_filtrado.groupby("Pays")["Force"].sum()
+datos_torta= df_filtrado.groupby("Nom")["Acceleration"].sum()
 
 #6
 suma_aceleracion= df_filtrado['Acceleration'].sum()
@@ -46,12 +46,12 @@ else:
     print("Estado normal")
 
 #7
-df_top_100=df.nlargest(100,'Acceleration')
+df_top_50=df.nlargest(50,'Acceleration')
 
 sns.set_theme(style="whitegrid")
 pit.figure(figsize=(9,5))
 sns.barplot(
-    data=df_top_100,
+    data=df_top_50,
     x="Nom",
     y="Acceleration",
     estimator= sum,
@@ -68,4 +68,23 @@ pit.tight_layout()
 pit.xticks(rotation=50, fontsize=3)
 pit.savefig("grafico_aceleración2.png", dpi=300, bbox_inches="tight")
 pit.close()
-print("Gráfico guardado como grafico_aceleración2.png")
+print("Gráfico guardado como grafico_aceleración.png")
+
+#8
+datos_torta= df_filtrado.groupby("Pays")["Force"].sum()
+
+pit.figure(figsize=(7,7))
+pit.pie(
+    datos_torta,
+    labels=datos_torta.index,
+    autopct="%1.1f%%",
+    colors=sns.color_palette("Set2"),
+    startangle=140,
+    wedgeprops={"edgecolor":"white", "linewidth":2}
+)
+pit.title("Distribucion interna de fuerza")
+pit.tight_layout()
+pit.xticks(rotation=50, fontsize=3)
+pit.savefig("grafico_fuerza3.png", dpi=300, bbox_inches="tight")
+pit.close()
+print("Gráfico guardado como grafico_fuerza3.png")
