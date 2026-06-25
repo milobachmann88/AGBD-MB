@@ -94,3 +94,95 @@ resultado=df.loc[filtro_avanzado & condicion_extra,
                    ["Nom", "Général", "Pays"]]
 print(resultado)
 print(f"\nFilas seleccionadas: {len(resultado)}")
+
+#
+'''
+Las filas que quedaron despues de aplicar el doble filtro 
+(nombres con A y general mayor a 70) fueron 424
+
+el resultado sin loc seria igual pero con loc es mas rapido y se hace
+en una sola linea
+
+Lo que pasaria seria que en vez de poner dos condiciones con y, seria con o
+es decir que contaria las filas cuyo nombre empiece con a O las que tengan
+un general mayor a 70. no tiene mucho sentido porque no juntaria ningun dato 
+y mostraria demasiadas filas
+'''
+
+#10
+print("Nulos por columna: ")
+print(df.isnull().sum())
+
+df_con_nulos = df.copy()
+df_con_nulos.loc[[0, 3, 7], 'Général'] = None
+
+print('\nNulos después de modificar:')
+print(df_con_nulos.isnull().sum())
+
+df_sin_nulos = df.dropna()
+
+media = df_con_nulos['Général'].mean()
+df_rellenado = df_con_nulos.fillna({'Général': round(media, 2)})
+
+print(f'\nOriginal:   {len(df_con_nulos)} filas')
+print(f'Con dropna: {len(df_sin_nulos)} filas  (se eliminaron filas)')
+print(f'Con fillna: {len(df_rellenado)} filas  (se rellenaron los huecos)')
+
+# 
+'''
+Es mas conveniente fillna para que no se pierdan otros valores importantes
+
+El problema que puede generar fillna si hay muchos nulos es que
+como saca el promedio, puede dar valores equivocados y todos iguales
+
+Si, si hubiera nulos reales se habrian eliminado esos jugadores
+'''
+
+#11
+
+df_top_100=df.head(100)
+
+agrupado = df_top_100.groupby("Nom")['Reflexes'].sum().sort_values()
+
+fig, ax = plt.subplots(figsize=(10, 5))
+ax.plot(agrupado.index, agrupado.values, marker='o',
+        color="#C411DB", linewidth=2, markersize=8)
+
+idx_max = agrupado.idxmax()          # categoría con valor más alto
+val_max = agrupado.max()             # valor más alto
+ 
+ax.annotate(
+    f'Máximo: {val_max:,.0f}',       # texto de la anotación
+    xy=(idx_max, val_max),           # punto al que apunta la flecha
+    xytext=(1, val_max * 0.85),      # posición del texto
+    arrowprops=dict(arrowstyle='->', color='red'),
+    fontsize=11, color='red', fontweight='bold'
+)
+
+ax.set_title('Evolución por reflejos', fontsize=14, fontweight='bold')
+ax.set_xlabel('reflejos')
+ax.set_ylabel('Total')
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+plt.savefig('grafico_reflejos.png', dpi=150)
+plt.show()
+
+# 
+'''
+La linea me quedó discontinua porque no tenía valores lineales como
+fechas, entonces saltó de un valor al otro
+
+Para mis datos hubiera sido mejor usar otro tipo de gráfico, 
+el de barras hubiera funcionado mejor
+
+sort.index alinea los valores segun el indice, en este caso los nombres,
+y eso generaria un grafico aun mas discontinuo porque no agruparia los valores
+numericamente como sort.values, sino alfabeticamente, por lo que para un grafico
+de linea mayormente conviene el sort.values
+'''
+
+
+
+
+
+
